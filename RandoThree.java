@@ -1,7 +1,7 @@
 public class RandoThree implements Randomizer {
 
   static {
-    System.out.println("Loading JcipDifferent");
+    System.out.println("Loading RandoThree");
   }
   
   @Override

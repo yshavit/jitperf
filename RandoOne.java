@@ -1,6 +1,6 @@
 public class RandoOne implements Randomizer {
   static {
-    System.out.println("Loading IncrementingRandomizer");
+    System.out.println("Loading RandoOne");
   }
     
   @Override

@@ -1,7 +1,7 @@
 public class RandoTwo implements Randomizer {
 
   static {
-    System.out.println("Loading JcipRandomizer");
+    System.out.println("Loading RandoTwo");
   }
   
   @Override
