@@ -18,7 +18,6 @@ public class JitPerfMain {
     long seed = System.nanoTime();    
     while (true) {
       seed = runExperiment(seed, randomsRef);
-      
     }
   }
 
