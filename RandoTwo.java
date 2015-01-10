@@ -1,4 +1,4 @@
-public class RandoTwo implements Randomizer {
+public class RandoTwo extends AbstractRandomizer {
 
   static {
     System.out.println("Loading RandoTwo");

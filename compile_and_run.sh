@@ -5,5 +5,5 @@ if [ "$?" -eq 0 ]; then
 fi
 set -e
 
-javac -XDignore.symbol.file Randomizer.java RandoOne.java JitPerfMain.java
+javac -XDignore.symbol.file Randomizer.java AbstractRandomizer.java RandoOne.java JitPerfMain.java
 java -XX:+PrintCompilation JitPerfMain
