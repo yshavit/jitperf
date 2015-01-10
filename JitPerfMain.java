@@ -49,7 +49,7 @@ public class JitPerfMain {
               rand = new JcipRandomizer();
               break;
             case 1:
-              rand = new JcipTwice();
+              rand = new JcipDifferent();
               break;
             default:
               rand = null;
