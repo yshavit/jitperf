@@ -10,10 +10,7 @@ public class JitPerfMain {
   public static final long LOOPS_PER_EXPERIMENT = 1000000000;
   
   public static void main(String[] args) {
-    Randomizer[] randoms = new Randomizer[3];
-    for (int i = 0; i < randoms.length; ++i) {
-      randoms[i] = new RandoOne();
-    }
+    Randomizer[] randoms = new Randomizer[] { new RandoOne() };
     
     AtomicReference<Randomizer[]> randomsRef = new AtomicReference<Randomizer[]>(randoms);
     setUpHandler(randomsRef);
@@ -39,7 +36,7 @@ public class JitPerfMain {
       seed = randomizer.randomize(seed);
     }
     long end = System.nanoTime();
-    System.out.printf("%s ms (0x%x)%n", TimeUnit.NANOSECONDS.toMillis(end - start), seed);
+    System.out.printf("%s ms (0x%x) using %s%n", TimeUnit.NANOSECONDS.toMillis(end - start), seed, Arrays.toString(randomizers));
     return seed;
   }
 
