@@ -19,20 +19,25 @@ public class JitPerfMain {
     
     long seed = System.nanoTime();    
     while (true) {
-      int idx = Math.abs(((int)seed) + sync.get()) % randoms.length;
-      Randomizer randomizer = randoms[idx];
-      seed = runExperiment(seed, idx, randomizer);
+      seed = runExperiment(seed, randoms);
       
     }
   }
 
-  private static long runExperiment(long seed, int randoIdx, Randomizer randomizer) {
+  private static long runExperiment(long seed, Randomizer[] randomizers) {
+    Randomizer[] allRandos = new Randomizer[randomizers.length * 100];
+    for (int i = 0; i < allRandos.length; ++i) {
+      allRandos[i] = randomizers[i % randomizers.length];
+    }
+    Collections.shuffle(Arrays.asList(allRandos));
     long start = System.nanoTime();
     for (long i = 0; i < LOOPS_PER_EXPERIMENT; ++i) {
+      int idx = ((int)i) % allRandos.length;
+      Randomizer randomizer = allRandos[idx];
       seed = randomizer.randomize(seed);
     }
     long end = System.nanoTime();
-    System.out.printf("%s ms (%s[%d]: 0x%x)%n", TimeUnit.NANOSECONDS.toMillis(end - start), randomizer.getClass().getSimpleName(), randoIdx, seed);
+    System.out.printf("%s ms (0x%x)%n", TimeUnit.NANOSECONDS.toMillis(end - start), seed);
     return seed;
   }
 
