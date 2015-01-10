@@ -36,7 +36,7 @@ public class JitPerfMain {
       seed = randomizer.randomize(seed);
     }
     long end = System.nanoTime();
-    System.out.printf("%s ms (0x%x) using %s%n", TimeUnit.NANOSECONDS.toMillis(end - start), seed, Arrays.toString(randomizers));
+    System.out.printf("%s ms (0x%016x) using %s%n", TimeUnit.NANOSECONDS.toMillis(end - start), seed, Arrays.toString(randomizers));
     return seed;
   }
 
