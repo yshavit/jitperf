@@ -1,4 +1,4 @@
-public class JcipDifferent implements Randomizer {
+public class RandoThree implements Randomizer {
 
   static {
     System.out.println("Loading JcipDifferent");

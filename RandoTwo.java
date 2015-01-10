@@ -1,4 +1,4 @@
-public class JcipRandomizer implements Randomizer {
+public class RandoTwo implements Randomizer {
 
   static {
     System.out.println("Loading JcipRandomizer");

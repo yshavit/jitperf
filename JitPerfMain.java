@@ -12,7 +12,7 @@ public class JitPerfMain {
     AtomicInteger sync = new AtomicInteger(); 
     Randomizer[] randoms = new Randomizer[3];
     for (int i = 0; i < randoms.length; ++i) {
-      randoms[i] = new IncrementingRandomizer();
+      randoms[i] = new RandoOne();
     }
     
     setUpHandler(sync, randoms);
@@ -51,10 +51,10 @@ public class JitPerfMain {
           int step = sync.get();
           switch (step % 3) {
             case 0:
-              rand = new JcipRandomizer();
+              rand = new RandoTwo();
               break;
             case 1:
-              rand = new JcipDifferent();
+              rand = new RandoThree();
               break;
             default:
               rand = null;
@@ -63,9 +63,9 @@ public class JitPerfMain {
           if (step >= 2) {
             if (rand == null) {
               for (int i = 0; i < randoms.length; ++i) {
-                randoms[i] = new IncrementingRandomizer();
+                randoms[i] = new RandoOne();
               }
-              System.out.println("setting all to IncrementingRandomizer");
+              System.out.println("setting all to RandoOne");
             } else {
               int idx = step % randoms.length;
               randoms[idx] = rand;
