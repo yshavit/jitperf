@@ -6,7 +6,7 @@ for arg in "${@}"; do
   echo "Rando${arg}" >> __jpm_message.txt
 done
 
-TARGET_PID=$(jps -lm|grep JitPerfMain|sed 's/ .*//')
+TARGET_PID=$(pgrep -f JitPerfMain)
 if [ -z "$TARGET_PID" ]; then
   echo "JitPerfMain not running"
   exit 1
