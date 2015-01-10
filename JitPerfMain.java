@@ -1,6 +1,7 @@
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
@@ -9,22 +10,23 @@ public class JitPerfMain {
   public static final long LOOPS_PER_EXPERIMENT = 1000000000;
   
   public static void main(String[] args) {
-    AtomicInteger sync = new AtomicInteger(); 
     Randomizer[] randoms = new Randomizer[3];
     for (int i = 0; i < randoms.length; ++i) {
       randoms[i] = new RandoOne();
     }
     
-    setUpHandler(sync, randoms);
+    AtomicReference<Randomizer[]> randomsRef = new AtomicReference<Randomizer[]>(randoms);
+    setUpHandler(randomsRef);
     
     long seed = System.nanoTime();    
     while (true) {
-      seed = runExperiment(seed, randoms);
+      seed = runExperiment(seed, randomsRef);
       
     }
   }
 
-  private static long runExperiment(long seed, Randomizer[] randomizers) {
+  private static long runExperiment(long seed, AtomicReference<Randomizer[]> randomizersRef) {
+    Randomizer[] randomizers = randomizersRef.get();
     Randomizer[] allRandos = new Randomizer[randomizers.length * 100];
     for (int i = 0; i < allRandos.length; ++i) {
       allRandos[i] = randomizers[i % randomizers.length];
@@ -41,38 +43,42 @@ public class JitPerfMain {
     return seed;
   }
 
-  private static void setUpHandler(final AtomicInteger sync, final Randomizer[] randoms) {
+  private static void setUpHandler(final AtomicReference<Randomizer[]> randoms) {
     final String sigName = "USR2";
     SignalHandler handler = new SignalHandler() {
       @Override
       public void handle(Signal sig) {
-        if (sigName.equals(sig.getName())) {
-          final Randomizer rand;
-          int step = sync.get();
-          switch (step % 3) {
-            case 0:
-              rand = new RandoTwo();
-              break;
-            case 1:
-              rand = new RandoThree();
-              break;
-            default:
-              rand = null;
-              break;
+        if (!sigName.equals(sig.getName())) {
+          return;
+        }
+        FileReader reader = null;
+        try {
+          reader = new FileReader("__jpm_message.txt");
+          BufferedReader bf = new BufferedReader(reader);
+          String command = bf.readLine();
+          List<Randomizer> instances = new ArrayList<Randomizer>();
+          for (String line = bf.readLine(); line != null; line = bf.readLine()) {
+            Class<?> clazz = Class.forName(line);
+            Randomizer r = (Randomizer) clazz.newInstance();
+            instances.add(r);
           }
-          if (step >= 2) {
-            if (rand == null) {
-              for (int i = 0; i < randoms.length; ++i) {
-                randoms[i] = new RandoOne();
-              }
-              System.out.println("setting all to RandoOne");
-            } else {
-              int idx = step % randoms.length;
-              randoms[idx] = rand;
-              System.out.printf("setting randoms[%d] = %s%n", idx, rand.getClass().getSimpleName());
+          if ("install".equalsIgnoreCase(command)) {
+            Randomizer[] randos = instances.toArray(new Randomizer[instances.size()]);
+            randoms.set(randos);
+            System.out.println("installing " + instances);
+          } else {
+            System.out.println("loading " + instances);
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        } finally {
+          try {
+            if (reader != null) {
+              reader.close();
             }
+          } catch (IOException e) {
+            e.printStackTrace();
           }
-          sync.incrementAndGet();
         }
       }
     };
