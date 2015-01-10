@@ -12,6 +12,7 @@ if [ -z "$TARGET_PID" ]; then
   exit 1
 fi
 
+set -e
 for CLASS_NAME in $(sed 1d __jpm_message.txt | sort | uniq); do
   if [ ! -e "${CLASS_NAME}.class" ]; then
     echo "Compiling ${CLASS_NAME}"
