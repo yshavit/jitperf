@@ -13,7 +13,7 @@ This will load `RandoOne` and `RandoTwo`, compiling them first if necessary.
 
 To install (and compile/load if necessary) classes:
 
-    ./send_signal.sh instll One Two
+    ./send_signal.sh install One Two
 
 Explanation of the experiment
 =============================
